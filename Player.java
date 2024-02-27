@@ -60,5 +60,7 @@ public class Player {
 
     public void move () {
         this.position[0] += this.speed[0]; this.position[1] += this.speed[1];
+        if (this.position[0] < -32) {this.position[0] = 1280 + 30;}
+        else if (this.position[0] > 1280 + 32) {this.position[0] = -30;}
     }
 }
