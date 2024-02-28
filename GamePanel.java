@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -12,22 +13,24 @@ public class GamePanel extends JPanel implements Runnable{
 
 
     private int FPS = 120;
-    private Player p1 = new Player(32*35, 32*23, 10, 10, "pacman_animation.png");
+    private Player p1 = new Player(32*35, 32*23, 28, 28, "./assets/pacman_animation.png");
     private int animTick = 0, animSpeed = 15, animIndex = 0;
     private final int TILE_WIDTH = 32, TILE_HEIGHT = 32;
     private BufferedImage tilesetParentImg;
     private BufferedImage[] tileset = new BufferedImage[17];
+    private String gameState = "menu";
+    private Sound s = new Sound();
 
     Level l1 = new Level("l1.txt");
 
-    private Enemy blueEnemy = new Enemy(32*20, 32*12, 32, 32, "./ghost/blue ghost/spr_ghost_blue_0.png");
-    private Enemy orangeEnemy = new Enemy(32*21, 32*12, 32, 32, "./ghost/orange ghost/spr_ghost_orange_0.png");
-    private Enemy pinkEnemy = new Enemy(32*19, 32*12, 32, 32, "./ghost/pink ghost/spr_ghost_pink_0.png");
-    private Enemy redEnemy = new Enemy(32*18, 32*12, 32, 32, "./ghost/red ghost/spr_ghost_red_0.png");
+    private Enemy blueEnemy = new Enemy(32*20, 32*12, 32, 32, "./assets/ghost/blue ghost/spr_ghost_blue_0.png");
+    private Enemy orangeEnemy = new Enemy(32*21, 32*12, 32, 32, "./assets/ghost/orange ghost/spr_ghost_orange_0.png");
+    private Enemy pinkEnemy = new Enemy(32*19, 32*12, 32, 32, "./assets/ghost/pink ghost/spr_ghost_pink_0.png");
+    private Enemy redEnemy = new Enemy(32*18, 32*12, 32, 32, "./assets/ghost/red ghost/spr_ghost_red_0.png");
 
     private Enemy[] enemies = new Enemy[]{blueEnemy, orangeEnemy, pinkEnemy, redEnemy};
 
-    InputStream is = getClass().getResourceAsStream("tileset.png");
+    InputStream is = getClass().getResourceAsStream("./assets/tileset.png");
     {
     try {
         this.tilesetParentImg = ImageIO.read(is);
@@ -51,29 +54,52 @@ public class GamePanel extends JPanel implements Runnable{
         this.setFrameSize();
         setBackground(Color.BLACK);
         setOpaque(true);
-        addKeyListener(new KeyboardInputs(p1));
+        addKeyListener(new KeyboardInputs(p1, this));
         
+    }
+
+    public void render(Graphics g) {
+
+        switch (gameState) {
+            case "menu":
+                if (animIndex <= 1) {
+                    g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+                    g.setColor(Color.WHITE);
+                    g.drawString("Press Enter to start game", 400, 500);
+                }
+                InputStream is = getClass().getResourceAsStream("./assets/logo.png");
+                BufferedImage logo = null;
+                try {
+                    logo = ImageIO.read(is);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                g.drawImage(logo, 350, 100, null);
+                break;
+
+            case "level":
+            l1.drawMap(g, tileset, TILE_HEIGHT, TILE_WIDTH);
+            p1.draw(g, animIndex);
+
+            for (int i=0; i<4; i++) {
+                enemies[i].draw(g);
+            }
+            break;
+        }
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        int[] posPlayer = p1.getPosition();
         updateAnimationTick();
-        int[][] currentLevel = l1.getLevel();
         
-
-        for (int i=0; i<25; i++) {
-            for (int j=0; j<40; j++) {
-                g.drawImage(tileset[currentLevel[i][j]], TILE_WIDTH*j, TILE_HEIGHT*i, TILE_WIDTH, TILE_HEIGHT, null);
-            }
-        }
-        g.drawImage(p1.getSprite()[animIndex], posPlayer[0], posPlayer[1], 30, 30, null);
-
-        for (int i=0; i<4; i++) {
-            int[] posEnemy = enemies[i].getPosition();
-            g.drawImage(enemies[i].getSprite(), posEnemy[0], posEnemy[1], 32, 32, null);
-        }
+        render(g);
 
     }
 
@@ -92,6 +118,25 @@ public class GamePanel extends JPanel implements Runnable{
         setMinimumSize(d);
         setPreferredSize(d);
         setMaximumSize(d);
+    }
+
+    void playBG() {
+        s.setFile(0);
+        s.play();
+        s.loop();
+    }
+
+    void playSE(int i) {
+        s.setFile(i);
+        s.play();
+    }
+
+    public String getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(String gs) {
+        gameState = gs;
     }
 
     public void startGameThread () {

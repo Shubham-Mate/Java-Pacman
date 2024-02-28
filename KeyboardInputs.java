@@ -1,10 +1,15 @@
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.concurrent.TimeUnit;
+import java.awt.Graphics;
 
 public class KeyboardInputs implements KeyListener {
     Player p;
-    public KeyboardInputs (Player q) {
+    GamePanel g;
+    public KeyboardInputs (Player q, GamePanel gp) {
         this.p = q;
+        this.g = gp;
     }
 
     @Override
@@ -14,25 +19,40 @@ public class KeyboardInputs implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                this.p.setSpeed(new int[]{0, -1});
-                System.out.println('W');
-                break;
-            
-            case KeyEvent.VK_S:
-                this.p.setSpeed(new int[]{0, 1});
-                break;
+        switch (this.g.getGameState()) {
+        case "level":
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W:
+                    this.p.setSpeed(new int[]{0, -1});
+                    System.out.println('W');
+                    break;
+                
+                case KeyEvent.VK_S:
+                    this.p.setSpeed(new int[]{0, 1});
+                    break;
 
-            case KeyEvent.VK_A:
-                this.p.setSpeed(new int[]{-1, 0});
-                break;
+                case KeyEvent.VK_A:
+                    this.p.setSpeed(new int[]{-1, 0});
+                    break;
 
-            case KeyEvent.VK_D:
-                this.p.setSpeed(new int[]{1, 0});
-                break;
-            
-        }
+                case KeyEvent.VK_D:
+                    this.p.setSpeed(new int[]{1, 0});
+                    break;
+                
+            }
+            break;
+        case "menu" :
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                this.g.setGameState("level");
+                this.g.playSE(1);
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                this.g.playBG();
+            }
+    }
 
     }
 

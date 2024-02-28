@@ -1,3 +1,4 @@
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,14 +9,16 @@ public class Player {
     private int[] position = new int[2];
     private int[] size = new int[2];
     private int[] speed = new int[]{0, 0};
+    private int speedMultiplier = 2;
     private BufferedImage sprite;
     private BufferedImage animSprites[][] = new BufferedImage[4][4];
+    private int lives = 3;
 
     public Player (int x, int y, int sizex, int sizey, String imgname) {
-        this.position[0] = (x);
-        this.position[1] = (y);
-        this.size[0] = (sizex);
-        this.size[1] = (sizey);
+        this.position[0] = x;
+        this.position[1] = y;
+        this.size[0] = sizex;
+        this.size[1] = sizey;
 
         InputStream is = getClass().getResourceAsStream(imgname);
         try {
@@ -59,8 +62,12 @@ public class Player {
     }
 
     public void move () {
-        this.position[0] += this.speed[0]; this.position[1] += this.speed[1];
+        this.position[0] += this.speed[0]*speedMultiplier; this.position[1] += this.speed[1]*speedMultiplier;
         if (this.position[0] < -32) {this.position[0] = 1280 + 30;}
         else if (this.position[0] > 1280 + 32) {this.position[0] = -30;}
+    }
+
+    public void draw (Graphics g, int animIndex) {
+        g.drawImage(getSprite()[animIndex], position[0], position[1], size[0], size[1], null);
     }
 }
