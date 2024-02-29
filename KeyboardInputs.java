@@ -43,15 +43,14 @@ public class KeyboardInputs implements KeyListener {
             break;
         case "menu" :
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                this.g.setGameState("level");
-                this.g.playSE(1);
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                this.g.playBG();
+                this.g.setGameState("starting");
             }
+            break;
+        case "game over" :
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                this.g.setGameState("menu");
+            }
+            break;
     }
 
     }

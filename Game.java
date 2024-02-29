@@ -7,9 +7,10 @@ class Game {
 
     public static void main(String[] args) {
         GamePanel panel = new GamePanel();
-        GameWindow window = new GameWindow("Pong", panel);
+        GameWindow window = new GameWindow("Pacman", panel);
 
         panel.requestFocus();
+
         panel.startGameThread();
     }
 }

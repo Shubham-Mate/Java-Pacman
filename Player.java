@@ -13,6 +13,7 @@ public class Player {
     private BufferedImage sprite;
     private BufferedImage animSprites[][] = new BufferedImage[4][4];
     private int lives = 3;
+    private int score = 0;
 
     public Player (int x, int y, int sizex, int sizey, String imgname) {
         this.position[0] = x;
@@ -69,5 +70,25 @@ public class Player {
 
     public void draw (Graphics g, int animIndex) {
         g.drawImage(getSprite()[animIndex], position[0], position[1], size[0], size[1], null);
+    }
+
+    public int getLives () {
+        return lives;
+    }
+
+    public void loseLife () {
+        lives--;
+    }
+
+    public void setLife (int i) {
+        lives = i;
+    }
+
+    public int getScore () {
+        return score;
+    }
+
+    public void setScore (int i) {
+        score = i;
     }
 }
