@@ -32,6 +32,9 @@ public class GamePanel extends JPanel implements Runnable{
 
     // Create the level
     Level l1 = new Level("l1.txt");
+    
+    // create the coins
+    Coins cns =new Coins("cns.txt");
 
     // Create the enemies
     private Enemy blueEnemy = new Enemy(32*20, 32*12, 32, 32, "./assets/ghost/blue ghost/spr_ghost_blue_0.png");
@@ -115,7 +118,9 @@ public class GamePanel extends JPanel implements Runnable{
 
             case "level":
                 l1.drawMap(g, tileset, TILE_HEIGHT, TILE_WIDTH); // Draw all the tiles on the screen
+                cns.drawMap(g, TILE_HEIGHT, TILE_WIDTH);
                 p1.draw(g, animIndex); // Draw the player on the screen
+                
 
                 // Draw Enemies on screen
                 for (int i=0; i<4; i++) {
