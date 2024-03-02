@@ -16,16 +16,16 @@ public class GamePanel extends JPanel implements Runnable{
     private int FPS = 120;
 
     // Create the player 
-    private Player p1 = new Player(32*35, 32*23, 28, 28, "./assets/pacman_animation.png");
+    public Player p1 = new Player(32*35, 32*23, 28, 28, "./assets/pacman_animation.png");
 
     // Define variables for the animation
     private int animTick = 0, animSpeed = 15, animIndex = 0;
 
     // Define the width and height of each tile as number of pixels on screen
-    private final int TILE_WIDTH = 32, TILE_HEIGHT = 32;
+    public final int TILE_WIDTH = 32, TILE_HEIGHT = 32;
 
     // Variable to manage what part of game we are in (Eg: menu, level, game over screen etc...)
-    private String gameState = "menu";
+    private String gameState = "level";
 
     // Create Sound object to manage sounds
     private Sound s = new Sound();
@@ -149,8 +149,39 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void update() {
         updateAnimationTick();
+        p1.move();
         if (p1.getLives() == 0) {
             setGameState("game over");
+        }
+        int[] playerTile = Collision.getPlayerTile(p1, TILE_HEIGHT, TILE_WIDTH); // Approximate location of player in 40x25 grid
+        
+        // Check collision of player with a coin with functionality to collect coins.
+        int[][] cmap = cns.getCoin();
+        for (int i=Math.max(0, playerTile[1] - 2); i<Math.min(25, playerTile[1] + 2); i++) {
+            for (int j=Math.max(0, playerTile[0] - 2); j<Math.min(40, playerTile[0] + 2); j++) {
+                if(cmap[i][j]==1){
+                    int collided = Collision.playerCoinCollision(p1, i, j, TILE_WIDTH, TILE_HEIGHT);
+                    if (collided == 1) {
+                        cns.changeCoin(i, j, 0);
+                        p1.setScore(p1.getScore() + 200);
+                    }
+                }
+            }
+        }
+
+        // Check collision of player with tiles
+        int[][] lvlMap = l1.getLevel();
+        for (int i=Math.max(0, playerTile[1] - 2); i<Math.min(25, playerTile[1] + 2); i++) {
+            for (int j=Math.max(0, playerTile[0] - 2); j<Math.min(40, playerTile[0] + 2); j++) {
+                if(lvlMap[i][j] != 8){
+                    int collided = Collision.playerTileCollision(p1, i, j, TILE_WIDTH, TILE_HEIGHT);
+                    if (collided == 1) {
+                        //p1.move(new int[]{p1.getSpeed()[0] * -1, p1.getSpeed()[1] * -1});
+                        p1.moveBackwards();
+                        //p1.setSpeed(new int[]{0, 0});
+                    }
+                }
+            }
         }
     }
 
@@ -210,7 +241,6 @@ public class GamePanel extends JPanel implements Runnable{
         while (true) {
             double now = System.nanoTime();
             if (now - last >= timePerFrame) {
-                p1.move();
                 repaint();
                 last = now;
             }

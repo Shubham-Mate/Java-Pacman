@@ -9,7 +9,7 @@ public class Player {
     private int[] position = new int[2];
     private int[] size = new int[2];
     private int[] speed = new int[]{0, 0};
-    private int speedMultiplier = 2;
+    public int speedMultiplier = 2;
     private BufferedImage sprite;
     private BufferedImage animSprites[][] = new BufferedImage[4][4];
     private int lives = 3;
@@ -44,8 +44,17 @@ public class Player {
 
     }
 
+    public int[] getSpeed () {
+        return speed;
+    }
+
     public void setSpeed(int[] s) {
         this.speed = s;
+    }
+
+    public void setPosition (int[] newPos) {
+        position[0] = newPos[0];
+        position[1] = newPos[1];
     }
 
     public int[] getPosition () {return position;}
@@ -66,6 +75,17 @@ public class Player {
         this.position[0] += this.speed[0]*speedMultiplier; this.position[1] += this.speed[1]*speedMultiplier;
         if (this.position[0] < -32) {this.position[0] = 1280 + 30;}
         else if (this.position[0] > 1280 + 32) {this.position[0] = -30;}
+    }
+
+    public void move(int[] customSpeed) {
+        this.position[0] += customSpeed[0]*speedMultiplier; this.position[1] += customSpeed[1]*speedMultiplier;
+        if (this.position[0] < -32) {this.position[0] = 1280 + 30;}
+        else if (this.position[0] > 1280 + 32) {this.position[0] = -30;}
+    }
+
+    public void moveBackwards() {
+        this.position[0] -= this.speed[0] * speedMultiplier;
+        this.position[1] -= this.speed[1] * speedMultiplier;
     }
 
     public void draw (Graphics g, int animIndex) {

@@ -14,33 +14,112 @@ public class KeyboardInputs implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
+        int[] originalSpeed = this.p.getSpeed();
+        int[] playerTile = Collision.getPlayerTile(p, g.TILE_HEIGHT, g.TILE_WIDTH);
+        int[][] lvlMap = g.l1.getLevel();
         switch (this.g.getGameState()) {
         case "level":
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W:
-                    this.p.setSpeed(new int[]{0, -1});
-                    System.out.println('W');
+                    if (lvlMap[playerTile[1]][playerTile[0] - 1] == 8) {
+                        System.out.println(lvlMap[playerTile[1]][playerTile[0] - 1] == 8);
+                        p.setPosition(new int[]{playerTile[1] * g.TILE_HEIGHT, playerTile[0] * g.TILE_WIDTH});
+                        this.p.setSpeed(new int[]{0, -1});
+                    }
+                    
                     break;
                 
                 case KeyEvent.VK_S:
+                if (lvlMap[playerTile[1]][playerTile[0] + 1] == 8) {
+                    System.out.println(lvlMap[playerTile[1]][playerTile[0] + 1]);
+                    p.setPosition(new int[]{playerTile[1] * g.TILE_HEIGHT, playerTile[0] * g.TILE_WIDTH});
                     this.p.setSpeed(new int[]{0, 1});
+                }
                     break;
 
                 case KeyEvent.VK_A:
+                if (lvlMap[playerTile[1] - 1][playerTile[0]] == 8) {
+                    System.out.println(lvlMap[playerTile[1] - 1][playerTile[0]]);
+                    p.setPosition(new int[]{playerTile[1] * g.TILE_HEIGHT, playerTile[0] * g.TILE_WIDTH});
                     this.p.setSpeed(new int[]{-1, 0});
+                }
                     break;
 
                 case KeyEvent.VK_D:
+                if (lvlMap[playerTile[1] + 1][playerTile[0]] == 8) {
+                    System.out.println(lvlMap[playerTile[1] + 1][playerTile[0]] == 8);
+                    p.setPosition(new int[]{playerTile[1] * g.TILE_HEIGHT, playerTile[0] * g.TILE_WIDTH});
                     this.p.setSpeed(new int[]{1, 0});
+                }
                     break;
                 
             }
-            break;
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int[] originalSpeed = this.p.getSpeed();
+        int[] playerTile = Collision.getPlayerTile(p, g.TILE_HEIGHT, g.TILE_WIDTH);
+        int[][] lvlMap = g.l1.getLevel();
+        switch (this.g.getGameState()) {
+        case "level":
+        switch (e.getKeyCode()) {
+
+            case KeyEvent.VK_W:
+            if (originalSpeed[0] == 0) {
+                this.p.setSpeed(new int[]{0, -1});
+                break;
+            }
+            System.out.println(lvlMap[playerTile[1] - 1][playerTile[0]]);
+                if (lvlMap[playerTile[1] - 1][playerTile[0]] == 8) {
+                    System.out.println(lvlMap[playerTile[1]][playerTile[0] - 1]);
+                    p.setPosition(new int[]{playerTile[0] * g.TILE_HEIGHT, playerTile[1] * g.TILE_WIDTH});
+                    this.p.setSpeed(new int[]{0, -1});
+                }
+                
+                break;
+            
+            case KeyEvent.VK_S:
+            if (originalSpeed[0] == 0) {
+                this.p.setSpeed(new int[]{0, 1});
+                break;
+            }
+            System.out.println(lvlMap[playerTile[1] + 1][playerTile[0]]);
+            if (lvlMap[playerTile[1] + 1][playerTile[0]] == 8) {
+                System.out.println(lvlMap[playerTile[1]][playerTile[0] + 1]);
+                p.setPosition(new int[]{playerTile[0] * g.TILE_HEIGHT, playerTile[1] * g.TILE_WIDTH});
+                this.p.setSpeed(new int[]{0, 1});
+            }
+                break;
+
+            case KeyEvent.VK_A:
+            if (originalSpeed[1] == 0) {
+                this.p.setSpeed(new int[]{-1, 0});
+                break;
+            }
+            System.out.println(lvlMap[playerTile[1]][playerTile[0] - 1]);
+            if (lvlMap[playerTile[1]][playerTile[0] - 1] == 8) {
+                System.out.println(lvlMap[playerTile[1] - 1][playerTile[0]]);
+                p.setPosition(new int[]{playerTile[0] * g.TILE_HEIGHT, playerTile[1] * g.TILE_WIDTH});
+                this.p.setSpeed(new int[]{-1, 0});
+            }
+                break;
+
+            case KeyEvent.VK_D:
+            if (originalSpeed[1] == 0) {
+                this.p.setSpeed(new int[]{1, 0});
+                break;
+            }
+            System.out.println(lvlMap[playerTile[1]][playerTile[0]]);
+            if (lvlMap[playerTile[1]][playerTile[0] + 1] == 8) {
+                System.out.println(lvlMap[playerTile[1] + 1][playerTile[0]] == 8);
+                p.setPosition(new int[]{playerTile[0] * g.TILE_HEIGHT, playerTile[1] * g.TILE_WIDTH});
+                this.p.setSpeed(new int[]{1, 0});
+            }
+                break;
+            
+        }
         case "menu" :
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 this.g.setGameState("starting");

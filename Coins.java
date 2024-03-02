@@ -41,10 +41,16 @@ public class Coins {
         for (int i=0; i<25; i++) {
             for (int j=0; j<40; j++) {
                 if(coinMap[i][j]==1){
-                g.setColor(Color.white);
+                g.setColor(Color.yellow);
                 g.fillOval(j*TILE_WIDTH + 8 , i*TILE_HEIGHT + 8, TILE_WIDTH/2, TILE_HEIGHT/2);
                 }
             }
         }
     }
+
+    void changeCoin(int x, int y, int val) {
+        coinMap[x][y] = val;
+    }
+
+    
 }
