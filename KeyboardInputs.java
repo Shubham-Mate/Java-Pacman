@@ -14,47 +14,7 @@ public class KeyboardInputs implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        int[] originalSpeed = this.p.getSpeed();
-        int[] playerTile = Collision.getPlayerTile(p, g.TILE_HEIGHT, g.TILE_WIDTH);
-        int[][] lvlMap = g.l1.getLevel();
-        switch (this.g.getGameState()) {
-        case "level":
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_W:
-                    if (lvlMap[playerTile[1]][playerTile[0] - 1] == 8) {
-                        System.out.println(lvlMap[playerTile[1]][playerTile[0] - 1] == 8);
-                        p.setPosition(new int[]{playerTile[1] * g.TILE_HEIGHT, playerTile[0] * g.TILE_WIDTH});
-                        this.p.setSpeed(new int[]{0, -1});
-                    }
-                    
-                    break;
-                
-                case KeyEvent.VK_S:
-                if (lvlMap[playerTile[1]][playerTile[0] + 1] == 8) {
-                    System.out.println(lvlMap[playerTile[1]][playerTile[0] + 1]);
-                    p.setPosition(new int[]{playerTile[1] * g.TILE_HEIGHT, playerTile[0] * g.TILE_WIDTH});
-                    this.p.setSpeed(new int[]{0, 1});
-                }
-                    break;
-
-                case KeyEvent.VK_A:
-                if (lvlMap[playerTile[1] - 1][playerTile[0]] == 8) {
-                    System.out.println(lvlMap[playerTile[1] - 1][playerTile[0]]);
-                    p.setPosition(new int[]{playerTile[1] * g.TILE_HEIGHT, playerTile[0] * g.TILE_WIDTH});
-                    this.p.setSpeed(new int[]{-1, 0});
-                }
-                    break;
-
-                case KeyEvent.VK_D:
-                if (lvlMap[playerTile[1] + 1][playerTile[0]] == 8) {
-                    System.out.println(lvlMap[playerTile[1] + 1][playerTile[0]] == 8);
-                    p.setPosition(new int[]{playerTile[1] * g.TILE_HEIGHT, playerTile[0] * g.TILE_WIDTH});
-                    this.p.setSpeed(new int[]{1, 0});
-                }
-                    break;
-                
-            }
-        }
+       
     }
 
     @Override
@@ -126,6 +86,11 @@ public class KeyboardInputs implements KeyListener {
             }
             break;
         case "game over" :
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                this.g.setGameState("menu");
+            }
+            break;
+        case "completed" :
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 this.g.setGameState("menu");
             }

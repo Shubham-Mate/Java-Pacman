@@ -20,6 +20,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     // Define variables for the animation
     private int animTick = 0, animSpeed = 15, animIndex = 0;
+    private int aiTimer = 0;
 
     // Define the width and height of each tile as number of pixels on screen
     public final int TILE_WIDTH = 32, TILE_HEIGHT = 32;
@@ -31,16 +32,17 @@ public class GamePanel extends JPanel implements Runnable{
     private Sound s = new Sound();
 
     // Create the level
-    Level l1 = new Level("l1.txt");
+    static Level l1 = new Level("l1.txt");
+    public static int[][] lvlMap = l1.getLevel();
     
     // create the coins
     Coins cns =new Coins("cns.txt");
 
     // Create the enemies
-    private Enemy blueEnemy = new Enemy(32*20, 32*12, 32, 32, "./assets/ghost/blue ghost/spr_ghost_blue_0.png");
-    private Enemy orangeEnemy = new Enemy(32*21, 32*12, 32, 32, "./assets/ghost/orange ghost/spr_ghost_orange_0.png");
-    private Enemy pinkEnemy = new Enemy(32*19, 32*12, 32, 32, "./assets/ghost/pink ghost/spr_ghost_pink_0.png");
-    private Enemy redEnemy = new Enemy(32*18, 32*12, 32, 32, "./assets/ghost/red ghost/spr_ghost_red_0.png");
+    private Enemy blueEnemy = new Enemy(32*19 - 10, 32*10, 32, 32, "./assets/ghost/blue ghost/spr_ghost_blue_0.png", new int[]{0, 0});
+    private Enemy orangeEnemy = new Enemy(32*19 - 10, 32*10, 32, 32, "./assets/ghost/orange ghost/spr_ghost_orange_0.png", new int[]{39, 25});
+    private Enemy pinkEnemy = new Enemy(32*19 - 10, 32*10, 32, 32, "./assets/ghost/pink ghost/spr_ghost_pink_0.png", new int[]{39, 0});
+    private Enemy redEnemy = new Enemy(32*19 - 10, 32*10, 32, 32, "./assets/ghost/red ghost/spr_ghost_red_0.png", new int[]{0, 25});
     private Enemy[] enemies = new Enemy[]{blueEnemy, orangeEnemy, pinkEnemy, redEnemy};
 
     // Load the tileset images
@@ -63,6 +65,8 @@ public class GamePanel extends JPanel implements Runnable{
     for (int i=0; i<17; i++) {
         tileset[i] = tilesetParentImg.getSubimage(i*16, 0, 16, 14);
     }
+
+    
 }
     
     public GamePanel () {
@@ -144,16 +148,46 @@ public class GamePanel extends JPanel implements Runnable{
                     g.drawString("Press Enter to continue", 400, 700);
                 }
                 g.drawString("Your score: " + p1.getScore(), 400, 500);
+                break;
+            
+            case "completed":
+            g.setFont(new Font("TimesRoman", Font.PLAIN, 100));
+            g.setColor(Color.WHITE);
+            g.drawString("You won, Congrats!!!!", 275, 200);
+            g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+            if (animIndex <= 1) {
+                g.drawString("Press Enter to continue", 400, 700);
+            }
+            g.drawString("Your score: " + p1.getScore(), 400, 500);
+            break;
         }
     }
 
     public void update() {
         updateAnimationTick();
+        updateAITick();
         p1.move();
+        int[] playerTile = Collision.getPlayerTile(p1, TILE_HEIGHT, TILE_WIDTH); // Approximate location of player in 40x25 grid
+        for (int i=0; i<4; i++) {
+            if (enemies[i].chase) {
+                enemies[i].setTargetTile(playerTile);
+            }
+            enemies[i].move();
+            int touchedEnemy = Collision.playerEnemyCollision(p1, enemies[i]);
+            if (touchedEnemy == 1) {
+                p1.loseLife();
+                respawn();
+
+                if (p1.getLives() == 0) {
+                    setGameState("game over");
+                }
+                break;
+            }
+        }
         if (p1.getLives() == 0) {
             setGameState("game over");
         }
-        int[] playerTile = Collision.getPlayerTile(p1, TILE_HEIGHT, TILE_WIDTH); // Approximate location of player in 40x25 grid
+        
         
         // Check collision of player with a coin with functionality to collect coins.
         int[][] cmap = cns.getCoin();
@@ -164,13 +198,27 @@ public class GamePanel extends JPanel implements Runnable{
                     if (collided == 1) {
                         cns.changeCoin(i, j, 0);
                         p1.setScore(p1.getScore() + 200);
+                        break;
                     }
                 }
             }
         }
 
+        boolean coinExists = false;
+        cmap = cns.getCoin();
+        for (int i=0; i<25; i++) {
+            for (int j=0; j<40; j++) {
+                if (cmap[i][j] == 1) {
+                    coinExists = true;
+                }
+            }
+        }
+        if (!coinExists) {
+            setGameState("completed");
+        }
+
         // Check collision of player with tiles
-        int[][] lvlMap = l1.getLevel();
+        
         for (int i=Math.max(0, playerTile[1] - 2); i<Math.min(25, playerTile[1] + 2); i++) {
             for (int j=Math.max(0, playerTile[0] - 2); j<Math.min(40, playerTile[0] + 2); j++) {
                 if(lvlMap[i][j] != 8){
@@ -202,6 +250,27 @@ public class GamePanel extends JPanel implements Runnable{
         animIndex %= 4;
     }
 
+    private void updateAITick() {
+        aiTimer++;
+        if (aiTimer >= 120*10) {
+            for (int i=0; i<4; i++) {
+                if (enemies[i].scatter) {
+                    enemies[i].scatter = false;
+                    enemies[i].chase = true;
+                    aiTimer = 0;
+                }
+            }
+        } else if (aiTimer >= 120*5) {
+            for (int i=0; i<4; i++) {
+            if (enemies[i].chase) {
+                enemies[i].chase = false;
+                enemies[i].scatter = true;
+                aiTimer = 0;
+            }
+        }
+        }
+    }
+
     private void setFrameSize() {
         Dimension d = new Dimension(1280, 800);
         setMinimumSize(d);
@@ -226,6 +295,13 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void setGameState(String gs) {
         gameState = gs;
+    }
+
+    public void respawn() {
+        p1.setPosition(new int[]{32*35, 32*23});
+        for (int i=0; i<4; i++) {
+            enemies[i].setPosition(new int[]{32*19 - 10, 32*10});
+        }
     }
 
     public void startGameThread () {

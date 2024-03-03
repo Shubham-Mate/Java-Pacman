@@ -12,7 +12,7 @@ public class Player {
     public int speedMultiplier = 2;
     private BufferedImage sprite;
     private BufferedImage animSprites[][] = new BufferedImage[4][4];
-    private int lives = 3;
+    private int lives = 5;
     private int score = 0;
 
     public Player (int x, int y, int sizex, int sizey, String imgname) {
