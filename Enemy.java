@@ -16,6 +16,7 @@ public class Enemy {
     private int[] targetTile;
     private int[] scatterTargetTile;
     public int speedMultiplier = 2;
+    private int[] initialPos = new int[2];
 
     public Enemy (int x, int y, int sizex, int sizey, String imgname, int[] target) {
         this.position[0] = x;
@@ -24,6 +25,8 @@ public class Enemy {
         this.size[1] = sizey;
         targetTile = target;
         scatterTargetTile = target;
+        initialPos[0] = x;
+        initialPos[1] = y;
 
         InputStream is = getClass().getResourceAsStream(imgname);
         try {
@@ -157,5 +160,10 @@ public class Enemy {
 
     public void setTargetTile(int[] tt) {
         targetTile = tt;
+    }
+
+    public void resetLocation() {
+        this.position[0] = initialPos[0];
+        this.position[1] = initialPos[1];
     }
 }

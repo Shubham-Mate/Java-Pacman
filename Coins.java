@@ -43,6 +43,9 @@ public class Coins {
                 if(coinMap[i][j]==1){
                 g.setColor(Color.yellow);
                 g.fillOval(j*TILE_WIDTH + 8 , i*TILE_HEIGHT + 8, TILE_WIDTH/4, TILE_HEIGHT/4);
+                } else if(coinMap[i][j]==2){
+                    g.setColor(Color.white);
+                    g.fillOval(j*TILE_WIDTH + 8 , i*TILE_HEIGHT + 8, TILE_WIDTH/4, TILE_HEIGHT/4);
                 }
             }
         }

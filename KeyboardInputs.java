@@ -31,9 +31,8 @@ public class KeyboardInputs implements KeyListener {
                 this.p.setSpeed(new int[]{0, -1});
                 break;
             }
-            System.out.println(lvlMap[playerTile[1] - 1][playerTile[0]]);
+
                 if (lvlMap[playerTile[1] - 1][playerTile[0]] == 8) {
-                    System.out.println(lvlMap[playerTile[1]][playerTile[0] - 1]);
                     p.setPosition(new int[]{playerTile[0] * g.TILE_HEIGHT, playerTile[1] * g.TILE_WIDTH});
                     this.p.setSpeed(new int[]{0, -1});
                 }
@@ -45,9 +44,7 @@ public class KeyboardInputs implements KeyListener {
                 this.p.setSpeed(new int[]{0, 1});
                 break;
             }
-            System.out.println(lvlMap[playerTile[1] + 1][playerTile[0]]);
             if (lvlMap[playerTile[1] + 1][playerTile[0]] == 8) {
-                System.out.println(lvlMap[playerTile[1]][playerTile[0] + 1]);
                 p.setPosition(new int[]{playerTile[0] * g.TILE_HEIGHT, playerTile[1] * g.TILE_WIDTH});
                 this.p.setSpeed(new int[]{0, 1});
             }
@@ -58,9 +55,7 @@ public class KeyboardInputs implements KeyListener {
                 this.p.setSpeed(new int[]{-1, 0});
                 break;
             }
-            System.out.println(lvlMap[playerTile[1]][playerTile[0] - 1]);
             if (lvlMap[playerTile[1]][playerTile[0] - 1] == 8) {
-                System.out.println(lvlMap[playerTile[1] - 1][playerTile[0]]);
                 p.setPosition(new int[]{playerTile[0] * g.TILE_HEIGHT, playerTile[1] * g.TILE_WIDTH});
                 this.p.setSpeed(new int[]{-1, 0});
             }
@@ -71,9 +66,7 @@ public class KeyboardInputs implements KeyListener {
                 this.p.setSpeed(new int[]{1, 0});
                 break;
             }
-            System.out.println(lvlMap[playerTile[1]][playerTile[0]]);
             if (lvlMap[playerTile[1]][playerTile[0] + 1] == 8) {
-                System.out.println(lvlMap[playerTile[1] + 1][playerTile[0]] == 8);
                 p.setPosition(new int[]{playerTile[0] * g.TILE_HEIGHT, playerTile[1] * g.TILE_WIDTH});
                 this.p.setSpeed(new int[]{1, 0});
             }

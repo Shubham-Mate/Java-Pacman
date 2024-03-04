@@ -171,8 +171,13 @@ public class GamePanel extends JPanel implements Runnable{
             enemies[i].move();
             int touchedEnemy = Collision.playerEnemyCollision(p1, enemies[i]);
             if (touchedEnemy == 1) {
-                p1.loseLife();
-                respawn();
+                if (!enemies[i].scared) {
+                    p1.loseLife();
+                    respawn();
+                } else {
+                    p1.setScore(p1.getScore() + 500);
+                    enemies[i].resetLocation();
+                }
 
                 if (p1.getLives() == 0) {
                     setGameState("game over");
@@ -188,11 +193,20 @@ public class GamePanel extends JPanel implements Runnable{
         int[][] cmap = cns.getCoin();
         for (int i=Math.max(0, playerTile[1] - 2); i<Math.min(25, playerTile[1] + 2); i++) {
             for (int j=Math.max(0, playerTile[0] - 2); j<Math.min(40, playerTile[0] + 2); j++) {
-                if(cmap[i][j]==1){
+                if(cmap[i][j]==1 || cmap[i][j] == 2){
                     int collided = Collision.playerCoinCollision(p1, i, j, TILE_WIDTH, TILE_HEIGHT);
                     if (collided == 1) {
+                        if (cmap[i][j] == 2) {
+                            for (int k=0; k<4; k++) {
+                                enemies[k].scared = true;
+                                enemies[k].scatter = false;
+                                enemies[k].chase = false;
+                                aiTimer = 0;
+                            }
+                        }
                         cns.changeCoin(i, j, 0);
                         p1.setScore(p1.getScore() + 200);
+
                         break;
                     }
                 }
@@ -203,7 +217,7 @@ public class GamePanel extends JPanel implements Runnable{
         cmap = cns.getCoin();
         for (int i=0; i<25; i++) {
             for (int j=0; j<40; j++) {
-                if (cmap[i][j] == 1) {
+                if (cmap[i][j] == 1 || cmap[i][j] == 2) {
                     coinExists = true;
                 }
             }
@@ -219,9 +233,7 @@ public class GamePanel extends JPanel implements Runnable{
                 if(lvlMap[i][j] != 8){
                     int collided = Collision.playerTileCollision(p1, i, j, TILE_WIDTH, TILE_HEIGHT);
                     if (collided == 1) {
-                        //p1.move(new int[]{p1.getSpeed()[0] * -1, p1.getSpeed()[1] * -1});
                         p1.moveBackwards();
-                        //p1.setSpeed(new int[]{0, 0});
                     }
                 }
             }
@@ -253,6 +265,9 @@ public class GamePanel extends JPanel implements Runnable{
                     enemies[i].scatter = false;
                     enemies[i].chase = true;
                     aiTimer = 0;
+                } else if (enemies[i].scared) {
+                    enemies[i].scared = false;
+                    enemies[i].scatter = true;
                 }
             }
         } else if (aiTimer >= 120*5) {
