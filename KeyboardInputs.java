@@ -73,17 +73,17 @@ public class KeyboardInputs implements KeyListener {
                 break;
             
         }
-        case "menu" :
+        case "menu":
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 this.g.setGameState("starting");
             }
             break;
-        case "game over" :
+        case "game over":
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 this.g.setGameState("menu");
             }
             break;
-        case "completed" :
+        case "completed":
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 this.g.setGameState("menu");
             }

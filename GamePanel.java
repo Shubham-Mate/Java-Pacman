@@ -201,6 +201,7 @@ public class GamePanel extends JPanel implements Runnable{
                                 enemies[k].scared = true;
                                 enemies[k].scatter = false;
                                 enemies[k].chase = false;
+                                enemies[k].speedMultiplier = 1;
                                 aiTimer = 0;
                             }
                         }
@@ -264,10 +265,12 @@ public class GamePanel extends JPanel implements Runnable{
                 if (enemies[i].scatter) {
                     enemies[i].scatter = false;
                     enemies[i].chase = true;
+                    enemies[i].speedMultiplier = 2;
                     aiTimer = 0;
                 } else if (enemies[i].scared) {
                     enemies[i].scared = false;
                     enemies[i].scatter = true;
+                    enemies[i].speedMultiplier = 2;
                 }
             }
         } else if (aiTimer >= 120*5) {
@@ -275,6 +278,7 @@ public class GamePanel extends JPanel implements Runnable{
             if (enemies[i].chase) {
                 enemies[i].chase = false;
                 enemies[i].scatter = true;
+                enemies[i].speedMultiplier = 2;
                 aiTimer = 0;
             }
         }
