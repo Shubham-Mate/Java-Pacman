@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int TILE_WIDTH = 32, TILE_HEIGHT = 32;
 
     // Variable to manage what part of game we are in (Eg: menu, level, game over screen etc...)
-    private String gameState = "level";
+    private String gameState = "menu";
 
     // Create Sound object to manage sounds
     private Sound s = new Sound();
@@ -109,15 +109,11 @@ public class GamePanel extends JPanel implements Runnable{
                 for (int i=0; i<4; i++) {
                     enemies[i].draw(g);
                 }
-                playSE(1);
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
                 setGameState("level");
-                p1.setLife(3);
+                p1.setLife(5);
                 p1.setScore(0);
+                respawn();
+                cns.resetCoin();
                 playBG();
 
             case "level":
@@ -180,12 +176,11 @@ public class GamePanel extends JPanel implements Runnable{
 
                 if (p1.getLives() == 0) {
                     setGameState("game over");
+                    s.stop();
+                    playSE(1);
                 }
                 break;
             }
-        }
-        if (p1.getLives() == 0) {
-            setGameState("game over");
         }
         
         

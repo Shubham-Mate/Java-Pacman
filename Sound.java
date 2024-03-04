@@ -12,8 +12,8 @@ public class Sound {
     URL url[] = new URL[10];
 
     Sound () {
-        url[0] = getClass().getResource("./music/pacman_chomp.wav");
-        url[1] = getClass().getResource("./music/pacman_beginning.wav");
+        url[0] = getClass().getResource("./music/43 Aquatic Race.wav");
+        url[1] = getClass().getResource("./music/gameover.wav");
     }
 
     void setFile(int i) {
